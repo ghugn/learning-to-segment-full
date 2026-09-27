@@ -14,7 +14,7 @@ from fsta.local_search import (
     blocks_to_aggregated_route,
     Block,
 )
-from features.subproblem import decompose_into_adjacent_subproblems, get_route_centroids
+from features.subproblem import SubProblem, decompose_into_adjacent_subproblems, get_route_centroids
 from .lns import LNSSolver
 from .pyvrp_solver import PyVRPSolver
 
