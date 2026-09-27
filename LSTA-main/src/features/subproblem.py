@@ -59,18 +59,35 @@ class SubProblem:
             self.tour_positions[self.orig_to_local[u]] = pos
 
 
+def get_route_centroids(instance: CVRPInstance, routes: List[List[int]]) -> np.ndarray:
+    """Compute 2D centroid of customers for each route."""
+    centroids = []
+    for r in routes:
+        custs = r[1:-1]
+        if custs:
+            centroids.append(np.mean(instance.coords[custs], axis=0))
+        else:
+            centroids.append(instance.coords[0])
+    return np.array(centroids)
+
+
 def decompose_into_adjacent_subproblems(
     instance: CVRPInstance,
     routes: List[List[int]],
+    strategy: str = "polar",
+    max_spatial_neighbors: int = 1,
 ) -> List[SubProblem]:
     """
-    Partition the full CVRP problem P with solution R into |R| subproblems,
+    Partition the full CVRP problem P with solution R into subproblems,
     each formed by grouping nodes from two adjacent routes (Section 4.3).
-    Adjacency is defined by polar angles of route centroids w.r.t the depot.
+    
+    Strategies:
+    - "polar" (default): Circular angular order of route centroids w.r.t. the depot.
+    - "spatial": Euclidean distance between route centroids in 2D space.
+    - "hybrid": Combines polar circular neighbors with spatial nearest neighbors.
     """
     num_routes = len(routes)
     if num_routes < 2:
-        # If only 1 route exists, create a single subproblem with that route
         return [SubProblem(instance, 0, 0, routes[0], routes[0])]
 
     depot = instance.coords[0]
@@ -80,29 +97,63 @@ def decompose_into_adjacent_subproblems(
         custs = r[1:-1]
         if not custs:
             continue
-        # Centroid of route
         pts = instance.coords[custs]
         centroid = np.mean(pts, axis=0)
         angle = math.atan2(centroid[1] - depot[1], centroid[0] - depot[0])
         route_angles.append((angle, r_idx))
 
-    # Sort routes in circular angular order around depot
     route_angles.sort(key=lambda x: x[0])
     ordered_route_indices = [idx for _, idx in route_angles]
 
     subproblems: List[SubProblem] = []
-    m = len(ordered_route_indices)
-    for i in range(m):
-        idx_curr = ordered_route_indices[i]
-        idx_next = ordered_route_indices[(i + 1) % m]
-        subproblems.append(
-            SubProblem(
-                instance=instance,
-                route_i_idx=idx_curr,
-                route_j_idx=idx_next,
-                route_i=routes[idx_curr],
-                route_j=routes[idx_next],
-            )
-        )
+    added_pairs = set()
+
+    # 1. Polar circular adjacent pairs
+    if strategy in ("polar", "hybrid"):
+        m = len(ordered_route_indices)
+        for i in range(m):
+            idx_curr = ordered_route_indices[i]
+            idx_next = ordered_route_indices[(i + 1) % m]
+            pair_key = (min(idx_curr, idx_next), max(idx_curr, idx_next))
+            if pair_key not in added_pairs:
+                added_pairs.add(pair_key)
+                subproblems.append(
+                    SubProblem(
+                        instance=instance,
+                        route_i_idx=idx_curr,
+                        route_j_idx=idx_next,
+                        route_i=routes[idx_curr],
+                        route_j=routes[idx_next],
+                    )
+                )
+
+    # 2. Spatial Euclidean nearest neighbors
+    if strategy in ("spatial", "hybrid") and len(routes) >= 3:
+        centroids = get_route_centroids(instance, routes)
+        for i in range(len(routes)):
+            if len(routes[i]) <= 2:
+                continue
+            dists = np.linalg.norm(centroids - centroids[i], axis=1)
+            dists[i] = 1e9
+            nearest_indices = np.argsort(dists)
+            added_for_i = 0
+            for j in nearest_indices:
+                if len(routes[j]) <= 2:
+                    continue
+                pair_key = (min(i, int(j)), max(i, int(j)))
+                if pair_key not in added_pairs:
+                    added_pairs.add(pair_key)
+                    subproblems.append(
+                        SubProblem(
+                            instance=instance,
+                            route_i_idx=i,
+                            route_j_idx=int(j),
+                            route_i=routes[i],
+                            route_j=routes[j],
+                        )
+                    )
+                    added_for_i += 1
+                    if added_for_i >= max_spatial_neighbors:
+                        break
 
     return subproblems

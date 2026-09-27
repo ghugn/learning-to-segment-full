@@ -72,10 +72,11 @@ def run_nds_scale(nds_dir: str, scale: int, time_limit: int) -> Dict[str, Any]:
     return {"cost": None, "time": None, "status": "Error/Timeout"}
 
 
-def save_markdown_and_json(all_scale_results: List[Dict[str, Any]], out_md: str, out_json: str, budgets: Dict[int, float]):
+def save_markdown_and_json(all_scale_results: List[Dict[str, Any]], out_md: str, out_json: str, budgets: Dict[int, float], backbone: str = "pyvrp"):
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump({"results": all_scale_results, "budgets": budgets}, f, indent=2)
 
+    l2_name = f"L2Seg-SYN-{backbone.upper()}"
     with open(out_md, "w", encoding="utf-8") as f:
         f.write("# Multi-Scale Empirical SOTA Benchmark: CVRP 1k, 2k, 3k (Paper Original Time)\n\n")
         f.write(f"- **Scale Budgets (Paper Original Time)**: 1k = {budgets[1000]:.1f}s (2.5m), 2k = {budgets[2000]:.1f}s (4.0m), 3k = {budgets[3000]:.1f}s (4.0m)\n")
@@ -89,7 +90,7 @@ def save_markdown_and_json(all_scale_results: List[Dict[str, Any]], out_md: str,
             nds_t_str = f"{item['nds_time']:.2f}s" if item['nds_time'] is not None else "-"
             nds_red = "0.0% (Full Graph)" if item['nds_cost'] is not None else "OOM / Unsupported Scale"
             f.write(f"| | **NDS (Hottung et al. 2022)** | {nds_c_str} | {item['nds_gap']} | {nds_t_str} | {nds_red} |\n")
-            f.write(f"| | **L2Seg-SYN-LNS (Our FSTA)** | **{item['l2seg_cost']:.3f}** | **{item['l2seg_gap']}** | **{item['l2seg_time']:.2f}s** | **-{item['l2seg_comp']:.1f}%** |\n")
+            f.write(f"| | **{l2_name} (Our FSTA)** | **{item['l2seg_cost']:.3f}** | **{item['l2seg_gap']}** | **{item['l2seg_time']:.2f}s** | **-{item['l2seg_comp']:.1f}%** |\n")
 
 
 def main():
@@ -162,8 +163,9 @@ def main():
         else:
             print(f" {nds_status}")
 
-        # 3. L2Seg-SYN-LNS (Our Proposed Framework)
-        print(f"  [3/3] Running L2Seg-SYN-LNS (FSTA Topological Compression, budget: {time_budget:.1f}s)...", end="", flush=True)
+        l2_name = f"L2Seg-SYN-{args.backbone.upper()}"
+        # 3. L2Seg Solver (Our Proposed Framework)
+        print(f"  [3/3] Running {l2_name} (FSTA Topological Compression, budget: {time_budget:.1f}s)...", end="", flush=True)
         l2_res = l2seg_solver.solve(instance, time_limit=time_budget, reopt_time_per_iter=3.0)
         l2_cost = l2_res["best_cost"]
         l2_time = l2_res["total_time"]
@@ -189,7 +191,7 @@ def main():
         })
 
         # Save progress incrementally after each scale
-        save_markdown_and_json(all_scale_results, out_md, out_json, budgets)
+        save_markdown_and_json(all_scale_results, out_md, out_json, budgets, backbone=args.backbone)
         print(f"  [+] Progress saved after scale N={scale} -> {out_md}")
 
     # Summary Table
@@ -207,7 +209,7 @@ def main():
         nds_reduct = "0.0% (Full Graph)" if item['nds_cost'] is not None else "OOM / No Model (-)"
         print(f"{'':<8} | {'NDS (Hottung et al. 2022)':<24} | {nds_c_str:<12} | {item['nds_gap']:<12} | {nds_t_str:<10} | {nds_reduct:<20}")
         comp_str = f"-{item['l2seg_comp']:.1f}% (Compressed!)"
-        print(f"{'':<8} | {'L2Seg-SYN-LNS (Our FSTA)':<24} | {item['l2seg_cost']:<12.3f} | {item['l2seg_gap']:<12} | {item['l2seg_time']:<10.2f} | {comp_str:<20}")
+        print(f"{'':<8} | {f'{l2_name} (Our FSTA)':<24} | {item['l2seg_cost']:<12.3f} | {item['l2seg_gap']:<12} | {item['l2seg_time']:<10.2f} | {comp_str:<20}")
         print("-" * 105)
 
     print(f"\n[+] Multi-Scale Benchmark complete and saved to: {out_md}")
