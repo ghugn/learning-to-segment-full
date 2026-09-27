@@ -1,0 +1,148 @@
+[2026-09-27 08:22:55] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 100
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 50
+    nb_nodes_ratio: 0.15
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_100
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 2
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp100_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_100
+================================================================================
+[2026-09-27 08:22:55] checksum.py(46) : Failed to find compiled extension; rebuilding.
+[2026-09-27 08:22:56] dist.py(1016) : running build_ext
+[2026-09-27 08:22:56] build_ext.py(537) : building 'src.cpp.cvrp.NDSOps' extension
+[2026-09-27 08:43:36] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 100
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 50
+    nb_nodes_ratio: 0.15
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_100
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 2
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp100_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_100
+================================================================================
+[2026-09-27 08:43:36] checksum.py(46) : Failed to find compiled extension; rebuilding.
+[2026-09-27 08:43:36] dist.py(1016) : running build_ext
+[2026-09-27 08:43:36] build_ext.py(537) : building 'src.cpp.cvrp.NDSOps' extension
+[2026-09-27 08:43:38] dir_util.py(58) : creating C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp
+[2026-09-27 08:43:38] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -ID:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Include "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\include" "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\include" "-ID:\Program Files\Visual Studio C++\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /TpD:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\.rendered.NDSOps.cpp /FoC:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\.rendered.NDSOps.obj -O2
+[2026-09-27 08:43:46] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -ID:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Include "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\include" "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\include" "-ID:\Program Files\Visual Studio C++\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /TpD:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Instance.cpp /FoC:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Instance.obj -O2
+[2026-09-27 08:43:46] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -ID:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Include "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\include" "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\include" "-ID:\Program Files\Visual Studio C++\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /TpD:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Operations.cpp /FoC:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Operations.obj -O2
+[2026-09-27 08:43:47] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -ID:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Include "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\include" "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\include" "-ID:\Program Files\Visual Studio C++\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /TpD:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Solution.cpp /FoC:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Solution.obj -O2
+[2026-09-27 08:43:48] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -ID:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Include "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\include" "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\include" "-ID:\Program Files\Visual Studio C++\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /TpD:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Tour.cpp /FoC:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Tour.obj -O2
+[2026-09-27 08:43:48] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pybind11\include -ID:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\include -IC:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Include "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\include" "-ID:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\include" "-ID:\Program Files\Visual Studio C++\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /TpD:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Utils.cpp /FoC:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Utils.obj -O2
+[2026-09-27 08:43:49] dir_util.py(58) : creating C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\src\cpp\cvrp
+[2026-09-27 08:43:49] spawn.py(75) : "D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\bin\HostX86\x64\link.exe" /nologo /INCREMENTAL:NO /LTCG /DLL /MANIFEST:EMBED,ID=2 /MANIFESTUAC:NO /LIBPATH:C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\libs /LIBPATH:C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64 /LIBPATH:C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\PCbuild\amd64 "/LIBPATH:D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\ATLMFC\lib\x64" "/LIBPATH:D:\Program Files\Visual Studio C++\VC\Tools\MSVC\14.51.36231\lib\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x64" /EXPORT:PyInit_NDSOps C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\.rendered.NDSOps.obj C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Instance.obj C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Operations.obj C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Solution.obj C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Tour.obj C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\Utils.obj /OUT:C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\src\cpp\cvrp\NDSOps.cp314-win_amd64.pyd /IMPLIB:C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\Release\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp\NDSOps.cp314-win_amd64.lib
+[2026-09-27 08:43:52] file_util.py(128) : copying C:\Users\ADMIN\AppData\Local\Temp\tmp3_5xfpkb\src\cpp\cvrp\NDSOps.cp314-win_amd64.pyd -> D:\Downloads\Lab_resource\Task5-MHoang\NDS\src\cpp\cvrp
+[2026-09-27 08:43:52] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_100/checkpoint-2000.pt
+[2026-09-27 08:43:53] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp100_test_seed1234.pkl
+[2026-09-27 08:43:53] search_sa.py(132) : ================================================================================
+[2026-09-27 08:43:53] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 08:43:53] search_sa.py(134) : ================================================================================
+[2026-09-27 08:44:24] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 100
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 50
+    nb_nodes_ratio: 0.15
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_100
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 2
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp100_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_100
+================================================================================
+[2026-09-27 08:44:24] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_100/checkpoint-2000.pt
+[2026-09-27 08:44:25] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp100_test_seed1234.pkl
+[2026-09-27 08:44:25] search_sa.py(132) : ================================================================================
+[2026-09-27 08:44:25] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 08:44:25] search_sa.py(134) : ================================================================================
+[2026-09-27 08:44:27] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.04m  |  Remain: 0.00m  |  Cost:   14.64  |  Avg:  14.637  |  Iters:    8
+[2026-09-27 08:44:27] search_sa.py(417) : ================================================================================
+[2026-09-27 08:44:27] search_sa.py(418) : Search Complete
+[2026-09-27 08:44:27] search_sa.py(419) : ================================================================================
+[2026-09-27 08:44:27] search_sa.py(420) : Average Cost:        14.637
+[2026-09-27 08:44:27] search_sa.py(421) : Average Runtime:       2.15 seconds
+[2026-09-27 08:44:27] search_sa.py(422) : Average Iterations:     8.0
+[2026-09-27 08:44:27] search_sa.py(423) : ================================================================================

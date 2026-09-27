@@ -1,0 +1,357 @@
+[2026-09-27 08:44:51] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 10
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 08:44:52] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 08:44:52] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 08:44:52] search_sa.py(132) : ================================================================================
+[2026-09-27 08:44:52] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 08:44:52] search_sa.py(134) : ================================================================================
+[2026-09-27 08:45:03] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.19m  |  Remain: 0.00m  |  Cost:   40.43  |  Avg:  40.427  |  Iters:    6
+[2026-09-27 08:45:03] search_sa.py(417) : ================================================================================
+[2026-09-27 08:45:03] search_sa.py(418) : Search Complete
+[2026-09-27 08:45:03] search_sa.py(419) : ================================================================================
+[2026-09-27 08:45:03] search_sa.py(420) : Average Cost:        40.427
+[2026-09-27 08:45:03] search_sa.py(421) : Average Runtime:      11.39 seconds
+[2026-09-27 08:45:03] search_sa.py(422) : Average Iterations:     6.0
+[2026-09-27 08:45:03] search_sa.py(423) : ================================================================================
+[2026-09-27 08:47:16] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 10
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 08:47:16] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 08:47:16] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 08:47:16] search_sa.py(132) : ================================================================================
+[2026-09-27 08:47:16] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 08:47:16] search_sa.py(134) : ================================================================================
+[2026-09-27 08:47:27] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.17m  |  Remain: 0.00m  |  Cost:   40.62  |  Avg:  40.616  |  Iters:    7
+[2026-09-27 08:47:27] search_sa.py(417) : ================================================================================
+[2026-09-27 08:47:27] search_sa.py(418) : Search Complete
+[2026-09-27 08:47:27] search_sa.py(419) : ================================================================================
+[2026-09-27 08:47:27] search_sa.py(420) : Average Cost:        40.616
+[2026-09-27 08:47:27] search_sa.py(421) : Average Runtime:      10.46 seconds
+[2026-09-27 08:47:27] search_sa.py(422) : Average Iterations:     7.0
+[2026-09-27 08:47:27] search_sa.py(423) : ================================================================================
+[2026-09-27 08:49:17] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 10
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 08:49:17] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 08:49:17] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 08:49:17] search_sa.py(132) : ================================================================================
+[2026-09-27 08:49:17] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 08:49:17] search_sa.py(134) : ================================================================================
+[2026-09-27 08:49:28] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.19m  |  Remain: 0.00m  |  Cost:   40.40  |  Avg:  40.399  |  Iters:    7
+[2026-09-27 08:49:28] search_sa.py(417) : ================================================================================
+[2026-09-27 08:49:28] search_sa.py(418) : Search Complete
+[2026-09-27 08:49:28] search_sa.py(419) : ================================================================================
+[2026-09-27 08:49:28] search_sa.py(420) : Average Cost:        40.399
+[2026-09-27 08:49:28] search_sa.py(421) : Average Runtime:      11.15 seconds
+[2026-09-27 08:49:28] search_sa.py(422) : Average Iterations:     7.0
+[2026-09-27 08:49:28] search_sa.py(423) : ================================================================================
+[2026-09-27 09:02:10] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 20
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 09:02:10] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 09:02:10] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 09:02:10] search_sa.py(132) : ================================================================================
+[2026-09-27 09:02:10] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 09:02:10] search_sa.py(134) : ================================================================================
+[2026-09-27 09:02:30] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.34m  |  Remain: 0.00m  |  Cost:   40.32  |  Avg:  40.322  |  Iters:   14
+[2026-09-27 09:02:30] search_sa.py(417) : ================================================================================
+[2026-09-27 09:02:30] search_sa.py(418) : Search Complete
+[2026-09-27 09:02:30] search_sa.py(419) : ================================================================================
+[2026-09-27 09:02:30] search_sa.py(420) : Average Cost:        40.322
+[2026-09-27 09:02:30] search_sa.py(421) : Average Runtime:      20.15 seconds
+[2026-09-27 09:02:30] search_sa.py(422) : Average Iterations:    14.0
+[2026-09-27 09:02:30] search_sa.py(423) : ================================================================================
+[2026-09-27 09:10:32] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 20
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 09:10:32] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 09:10:32] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 09:10:32] search_sa.py(132) : ================================================================================
+[2026-09-27 09:10:32] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 09:10:32] search_sa.py(134) : ================================================================================
+[2026-09-27 09:10:52] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.34m  |  Remain: 0.00m  |  Cost:   40.15  |  Avg:  40.151  |  Iters:   13
+[2026-09-27 09:10:52] search_sa.py(417) : ================================================================================
+[2026-09-27 09:10:52] search_sa.py(418) : Search Complete
+[2026-09-27 09:10:52] search_sa.py(419) : ================================================================================
+[2026-09-27 09:10:52] search_sa.py(420) : Average Cost:        40.151
+[2026-09-27 09:10:52] search_sa.py(421) : Average Runtime:      20.20 seconds
+[2026-09-27 09:10:52] search_sa.py(422) : Average Iterations:    13.0
+[2026-09-27 09:10:52] search_sa.py(423) : ================================================================================
+[2026-09-27 09:21:58] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 20
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 09:21:58] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 09:21:58] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 09:21:58] search_sa.py(132) : ================================================================================
+[2026-09-27 09:21:58] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 09:21:58] search_sa.py(134) : ================================================================================
+[2026-09-27 09:22:19] search_sa.py(408) : Instance   1/  1  |  Elapsed: 0.34m  |  Remain: 0.00m  |  Cost:   40.17  |  Avg:  40.169  |  Iters:   14
+[2026-09-27 09:22:19] search_sa.py(417) : ================================================================================
+[2026-09-27 09:22:19] search_sa.py(418) : Search Complete
+[2026-09-27 09:22:19] search_sa.py(419) : ================================================================================
+[2026-09-27 09:22:19] search_sa.py(420) : Average Cost:        40.169
+[2026-09-27 09:22:19] search_sa.py(421) : Average Runtime:      20.33 seconds
+[2026-09-27 09:22:19] search_sa.py(422) : Average Iterations:    14.0
+[2026-09-27 09:22:19] search_sa.py(423) : ================================================================================
+[2026-09-27 09:37:23] eval.py(50) : ================================================================================
+Configuration
+================================================================================
+env_params:
+  problem: cvrp
+  problem_size: 1000
+  num_nodes_to_remove: 15
+  recreate_n: 5
+  beta: 0
+  insert_in_new_tours_only: true
+  generator_params: null
+  starting_solution_params:
+    nb_iterations: 100
+    nb_nodes_ratio: 0.25
+tester_params:
+  use_cuda: false
+  cuda_device_num: 0
+  SA_delta: 15
+  SA_start_T: 0.1
+  SA_final_T: 0.001
+  softmax_temp: 1.0
+  model_load:
+  - path: models/cvrp_1000
+    epoch: 2000
+    node_to_remove: 15
+  use_baseline_destroy: false
+  nb_instances: 1
+  nb_iterations: 100000
+  max_runtime: 150
+  rollout_size: 200
+  aug_factor: 8
+  test_data_load:
+    enable: true
+    use_pkl_file: true
+    filename: data/cvrp/vrp1000_test_seed1234.pkl
+logger_params:
+  desc: eval_cvrp_1000
+================================================================================
+[2026-09-27 09:37:23] search_sa.py(108) : Loaded deconstruction policy from models/cvrp_1000/checkpoint-2000.pt
+[2026-09-27 09:37:23] search_sa.py(171) : Loaded test dataset from data/cvrp/vrp1000_test_seed1234.pkl
+[2026-09-27 09:37:23] search_sa.py(132) : ================================================================================
+[2026-09-27 09:37:23] search_sa.py(133) : Starting search on 1 instances
+[2026-09-27 09:37:23] search_sa.py(134) : ================================================================================
+[2026-09-27 09:39:53] search_sa.py(408) : Instance   1/  1  |  Elapsed: 2.50m  |  Remain: 0.00m  |  Cost:   39.39  |  Avg:  39.394  |  Iters:  113
+[2026-09-27 09:39:53] search_sa.py(417) : ================================================================================
+[2026-09-27 09:39:53] search_sa.py(418) : Search Complete
+[2026-09-27 09:39:53] search_sa.py(419) : ================================================================================
+[2026-09-27 09:39:53] search_sa.py(420) : Average Cost:        39.394
+[2026-09-27 09:39:53] search_sa.py(421) : Average Runtime:     150.25 seconds
+[2026-09-27 09:39:53] search_sa.py(422) : Average Iterations:   113.0
+[2026-09-27 09:39:53] search_sa.py(423) : ================================================================================
