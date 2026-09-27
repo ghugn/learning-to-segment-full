@@ -1,0 +1,29 @@
+[project]
+name = "lsta-l2seg"
+version = "1.0.0"
+description = "Learning to Segment for Large-Scale Vehicle Routing Problems (ICLR 2026)"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0.0",
+    "torch-geometric>=2.5.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "scikit-learn>=1.2.0",
+    "vrplib>=2.0.0",
+    "pyvrp>=0.14.0",
+    "matplotlib>=3.7.0",
+    "tqdm>=4.64.0",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--color=yes",
+    "-v",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]
+minversion = "6.0"
+testpaths = "tests/"

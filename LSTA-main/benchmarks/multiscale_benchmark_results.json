@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "scale": 1000,
+      "pyvrp_cost": 39.443721349860375,
+      "pyvrp_time": 150.241465900006,
+      "nds_cost": 39.39,
+      "nds_gap": "-0.14%",
+      "nds_time": 154.97050150000723,
+      "nds_status": "OK",
+      "l2seg_cost": 42.354899189085884,
+      "l2seg_gap": "+7.38%",
+      "l2seg_time": 151.850349299988,
+      "l2seg_comp": 79.21141358641358
+    },
+    {
+      "scale": 2000,
+      "pyvrp_cost": 54.054766907626416,
+      "pyvrp_time": 240.85164370000712,
+      "nds_cost": 54.15,
+      "nds_gap": "+0.18%",
+      "nds_time": 245.22032339998987,
+      "nds_status": "OK",
+      "l2seg_cost": 58.50903006606628,
+      "l2seg_gap": "+8.24%",
+      "l2seg_time": 240.09886149998056,
+      "l2seg_comp": 86.09067559243633
+    },
+    {
+      "scale": 3000,
+      "pyvrp_cost": 65.04027947474049,
+      "pyvrp_time": 241.52550779999,
+      "nds_cost": null,
+      "nds_gap": "-",
+      "nds_time": null,
+      "nds_status": "OOM / Unsupported Scale (-)",
+      "l2seg_cost": 69.20613386132433,
+      "l2seg_gap": "+6.41%",
+      "l2seg_time": 243.1203973000229,
+      "l2seg_comp": 86.21145892545621
+    }
+  ],
+  "budgets": {
+    "1000": 150.0,
+    "2000": 240.0,
+    "3000": 240.0
+  }
+}

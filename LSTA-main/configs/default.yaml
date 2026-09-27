@@ -1,0 +1,32 @@
+# Default Configuration for L2Seg + FSTA (ICLR 2026)
+
+model:
+  node_in_dim: 25
+  edge_in_dim: 3
+  hidden_dim: 128
+  num_tfm_layers: 2
+  num_gnn_layers: 2
+  num_ar_delete_layers: 1
+  num_ar_insert_layers: 4
+  dropout: 0.1
+
+training:
+  batch_size: 128
+  epochs: 200
+  lr_nar: 1e-4
+  lr_ar: 1e-4
+  w_pos: 9.0
+  w_insert: 0.8
+  w_delete: 0.2
+
+inference:
+  threshold: 0.55
+  n_clusters: 3
+  max_passes: 5
+  embed_internal_cost: true
+
+paths:
+  checkpoints_dir: "checkpoints"
+  nar_checkpoint: "checkpoints/nar_model.pt"
+  ar_checkpoint: "checkpoints/ar_model.pt"
+  assets_dir: "assets"
