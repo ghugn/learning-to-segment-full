@@ -86,6 +86,7 @@ def main():
     parser = argparse.ArgumentParser(description="Live Head-to-Head Benchmark: PyVRP vs NDS vs L2Seg+FSTA")
     parser.add_argument("--instances", type=int, default=1, help="Number of instances to evaluate from test set")
     parser.add_argument("--time_limit", type=float, default=15.0, help="Per-instance time limit in seconds")
+    parser.add_argument("--backbone", type=str, default="pyvrp", choices=["pyvrp", "lns"], help="Backbone re-optimizer (default: pyvrp)")
     parser.add_argument("--nds_dir", type=str, default="../NDS", help="Path to NDS cloned repository")
     args = parser.parse_args()
 
@@ -96,10 +97,12 @@ def main():
         print(f"Error: Dataset {data_path} not found.")
         sys.exit(1)
 
+    l2_name = f"L2Seg-SYN-{args.backbone.upper()}"
     print("=" * 80)
     print("LIVE HEAD-TO-HEAD BENCHMARK (CVRP-1000)")
     print(f"Test Set: vrp1000_test_seed1234.pkl ({args.instances} instances)")
     print(f"Time Budget per Instance: {args.time_limit:.1f}s")
+    print(f"L2Seg Backbone: {l2_name}")
     print("=" * 80)
 
     # 1. Run NDS
@@ -121,7 +124,7 @@ def main():
         except Exception as e:
             print(f"  Note: Neural model loading skipped ({e}), using structural heuristic.")
 
-    l2seg_lns = L2SegIterativeSolver(model=model, backbone="lns")
+    l2seg_solver = L2SegIterativeSolver(model=model, backbone=args.backbone)
 
     all_comparison = []
 
@@ -139,9 +142,9 @@ def main():
         nds_cost = nds_res[i]["cost"] if i < len(nds_res) else 0.0
         nds_time = nds_res[i]["time"] if i < len(nds_res) else 0.0
 
-        # L2Seg-SYN-LNS
-        print("  Running L2Seg-SYN-LNS (Iterative FSTA + LNS)...", end="", flush=True)
-        l2_res = l2seg_lns.solve(inst, time_limit=args.time_limit, reopt_time_per_iter=3.0)
+        # L2Seg Solver
+        print(f"  Running {l2_name} (Iterative FSTA + {args.backbone.upper()})...", end="", flush=True)
+        l2_res = l2seg_solver.solve(inst, time_limit=args.time_limit, reopt_time_per_iter=3.0)
         l2_cost = l2_res["best_cost"]
         l2_time = l2_res["total_time"]
         l2_comp = l2_res["avg_compression_pct"]
@@ -182,7 +185,7 @@ def main():
     avg_l2_time = np.mean([x["l2seg_time"] for x in all_comparison])
     avg_l2_gap = np.mean([x["l2seg_gap"] for x in all_comparison])
     avg_comp = np.mean([x["compression_pct"] for x in all_comparison])
-    print(f"{'L2Seg-SYN-LNS (Our FSTA)':<25} | {avg_l2_cost:<12.3f} | {f'{avg_l2_gap:+.2f}%':<15} | {avg_l2_time:<12.2f} | {f'-{avg_comp:.1f}%':<15}")
+    print(f"{l2_name + ' (Ours)':<25} | {avg_l2_cost:<12.3f} | {f'{avg_l2_gap:+.2f}%':<15} | {avg_l2_time:<12.2f} | {f'-{avg_comp:.1f}%':<15}")
     print("=" * 95)
 
     # Save to Markdown
@@ -196,7 +199,7 @@ def main():
         f.write("| :--- | :--- | :---: | :---: | :---: | :---: |\n")
         f.write(f"| **PyVRP (HGS Vidal 2022)** | Official C++ Engine | **{avg_py_cost:.3f}** | **0.00%** | {avg_py_time:.2f}s | 0.0% (Full Graph) |\n")
         f.write(f"| **NDS (Hottung et al. 2022)** | Official C++ / PyTorch Repo | **{avg_nds_cost:.3f}** | **{avg_nds_gap:+.2f}%** | {avg_nds_time:.2f}s | 0.0% (Full Graph) |\n")
-        f.write(f"| **L2Seg-SYN-LNS** | L2Seg AI + FSTA + Focused LNS | **{avg_l2_cost:.3f}** | **{avg_l2_gap:+.2f}%** | {avg_l2_time:.2f}s | **-{avg_comp:.1f}%** |\n")
+        f.write(f"| **{l2_name} (Ours)** | L2Seg AI + FSTA + Focused {args.backbone.upper()} | **{avg_l2_cost:.3f}** | **{avg_l2_gap:+.2f}%** | {avg_l2_time:.2f}s | **-{avg_comp:.1f}%** |\n")
     print(f"\nSaved Markdown report to: {out_md}")
 
 
