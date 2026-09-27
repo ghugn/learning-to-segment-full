@@ -42,6 +42,9 @@ def main():
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--output", type=str, default="assets/l2seg_fsta_process.png", help="Path for visualization output")
     parser.add_argument("--backbone", type=str, default="pyvrp", choices=["pyvrp", "lns"], help="Backbone solver for L2Seg")
+    parser.add_argument("--dataset", type=str, default=None, help="Path to .pkl dataset file (e.g. ../NDS/data/cvrp/vrp1000_test_seed1234.pkl)")
+    parser.add_argument("--instance_idx", type=int, default=0, help="Instance index in dataset")
+    parser.add_argument("--time_limit", type=float, default=15.0, help="Time limit in seconds for solving")
     parser.add_argument("--time_1k", type=int, default=150, help="Time limit for CVRP-1000")
     parser.add_argument("--time_2k", type=int, default=240, help="Time limit for CVRP-2000")
     parser.add_argument("--time_3k", type=int, default=240, help="Time limit for CVRP-3000")
@@ -49,15 +52,47 @@ def main():
     args, unknown = parser.parse_known_args()
 
     if args.mode == "infer":
-        from run.infer import run_pipeline
-        print("\n[*] Running L2Seg-SYN + FSTA End-to-End Pipeline...")
-        run_pipeline(
-            num_customers=args.customers,
-            capacity=args.capacity,
-            seed=args.seed,
-            nar_path="checkpoints/nar_model.pt",
-            ar_path="checkpoints/ar_model.pt",
-        )
+        if args.dataset:
+            import pickle
+            import numpy as np
+            from fsta.types import CVRPInstance
+            from solvers.l2seg_iterative_solver import L2SegIterativeSolver
+            from models.l2seg_model import L2SegModel
+
+            print(f"\n[*] Loading CVRP instance {args.instance_idx} from dataset: {args.dataset}")
+            with open(args.dataset, "rb") as f:
+                data = pickle.load(f)
+            elem = data[args.instance_idx]
+            coords = np.vstack([[elem[0]], elem[1]])
+            demands_full = np.array([0.0] + list(elem[2]), dtype=float)
+            instance = CVRPInstance(coords=coords, demands=demands_full, capacity=float(elem[3]))
+
+            print(f"[*] Problem Scale: N = {len(instance.coords) - 1} Customers | Capacity = {instance.capacity}")
+            print(f"[*] Solver Backbone: L2Seg-SYN-{args.backbone.upper()} | Time Budget: {args.time_limit}s")
+
+            model = None
+            if os.path.exists("checkpoints/nar_model.pt") and os.path.exists("checkpoints/ar_model.pt"):
+                try:
+                    model = L2SegModel.load_pretrained("checkpoints/nar_model.pt", "checkpoints/ar_model.pt")
+                    print("[+] Loaded pre-trained L2Seg neural model weights.")
+                except Exception as e:
+                    print(f"[-] Neural weight loading notice: {e}, using heuristic segmenter.")
+
+            solver = L2SegIterativeSolver(model=model, backbone=args.backbone)
+            res = solver.solve(instance, time_limit=args.time_limit)
+            print("\n" + "=" * 80)
+            print(f"SOLUTION SUMMARY: Cost = {res['best_cost']:.3f} | Total Time = {res['total_time']:.2f}s | Graph Compressed = {res['avg_compression_pct']:.1f}%")
+            print("=" * 80)
+        else:
+            from run.infer import run_pipeline
+            print("\n[*] Running L2Seg-SYN + FSTA End-to-End Pipeline...")
+            run_pipeline(
+                num_customers=args.customers,
+                capacity=args.capacity,
+                seed=args.seed,
+                nar_path="checkpoints/nar_model.pt",
+                ar_path="checkpoints/ar_model.pt",
+            )
 
     elif args.mode == "benchmark":
         from benchmarks.benchmark_suite import main as benchmark_main
