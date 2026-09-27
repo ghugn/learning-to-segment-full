@@ -1,0 +1,66 @@
+{
+  "scale": 1000,
+  "time_limit": 150.0,
+  "results": [
+    {
+      "instance_idx": 0,
+      "scale": 1000,
+      "pyvrp_cost": 39.443721349860375,
+      "pyvrp_time": 150.27626620000046,
+      "l2seg_cost": 40.79831822703941,
+      "l2seg_time": 151.70859510000082,
+      "gap_pct": 3.434252222714856,
+      "compression_pct": 70.51163122591694,
+      "iterations": 28,
+      "is_valid": true
+    },
+    {
+      "instance_idx": 1,
+      "scale": 1000,
+      "pyvrp_cost": 38.76770857958212,
+      "pyvrp_time": 150.20831800000087,
+      "l2seg_cost": 40.49453540180887,
+      "l2seg_time": 151.07049059999918,
+      "gap_pct": 4.4542916914522515,
+      "compression_pct": 66.69402026544881,
+      "iterations": 28,
+      "is_valid": true
+    },
+    {
+      "instance_idx": 2,
+      "scale": 1000,
+      "pyvrp_cost": 39.96899941941029,
+      "pyvrp_time": 150.17103530000168,
+      "l2seg_cost": 41.290763650085225,
+      "l2seg_time": 150.30184949999966,
+      "gap_pct": 3.3069735291723212,
+      "compression_pct": 67.03296703296704,
+      "iterations": 32,
+      "is_valid": true
+    },
+    {
+      "instance_idx": 3,
+      "scale": 1000,
+      "pyvrp_cost": 40.00096959677912,
+      "pyvrp_time": 150.19950040000185,
+      "l2seg_cost": 41.85004302112131,
+      "l2seg_time": 152.3456901999998,
+      "gap_pct": 4.622571510094281,
+      "compression_pct": 68.05315896224988,
+      "iterations": 33,
+      "is_valid": true
+    },
+    {
+      "instance_idx": 4,
+      "scale": 1000,
+      "pyvrp_cost": 48.252963548386475,
+      "pyvrp_time": 150.1854033999989,
+      "l2seg_cost": 51.163504863690186,
+      "l2seg_time": 151.4218875000006,
+      "gap_pct": 6.031839500148247,
+      "compression_pct": 67.51859251859251,
+      "iterations": 36,
+      "is_valid": true
+    }
+  ]
+}
