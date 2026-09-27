@@ -5,12 +5,12 @@
 
 | Scale | Method | Solution Cost (Obj) | Gap vs HGS (%) | Execution Time | Search Space Reduction |
 | :---: | :--- | :---: | :---: | :---: | :---: |
-| **CVRP-1000** | **PyVRP (HGS Vidal 2022)** | 39.444 | 0.00% | 150.24s | 0.0% (Full Graph) |
-| | **NDS (Hottung et al. 2022)** | 39.390 | -0.14% | 154.97s | 0.0% (Full Graph) |
-| | **L2Seg-SYN-LNS (Our FSTA)** | **42.355** | **+7.38%** | **151.85s** | **-79.2%** |
-| **CVRP-2000** | **PyVRP (HGS Vidal 2022)** | 54.055 | 0.00% | 240.85s | 0.0% (Full Graph) |
-| | **NDS (Hottung et al. 2022)** | 54.150 | +0.18% | 245.22s | 0.0% (Full Graph) |
-| | **L2Seg-SYN-LNS (Our FSTA)** | **58.509** | **+8.24%** | **240.10s** | **-86.1%** |
-| **CVRP-3000** | **PyVRP (HGS Vidal 2022)** | 65.040 | 0.00% | 241.53s | 0.0% (Full Graph) |
+| **CVRP-1000** | **PyVRP (HGS Vidal 2022)** | 39.444 | 0.00% | 150.19s | 0.0% (Full Graph) |
+| | **NDS (Hottung et al. 2022)** | 39.550 | +0.27% | 155.13s | 0.0% (Full Graph) |
+| | **L2Seg-SYN-PYVRP (Our FSTA)** | **40.753** | **+3.32%** | **150.60s** | **-75.1%** |
+| **CVRP-2000** | **PyVRP (HGS Vidal 2022)** | 54.057 | 0.00% | 240.80s | 0.0% (Full Graph) |
+| | **NDS (Hottung et al. 2022)** | 54.170 | +0.21% | 245.56s | 0.0% (Full Graph) |
+| | **L2Seg-SYN-PYVRP (Our FSTA)** | **55.749** | **+3.13%** | **241.61s** | **-80.3%** |
+| **CVRP-3000** | **PyVRP (HGS Vidal 2022)** | 65.047 | 0.00% | 241.48s | 0.0% (Full Graph) |
 | | **NDS (Hottung et al. 2022)** | - | - | - | OOM / Unsupported Scale |
-| | **L2Seg-SYN-LNS (Our FSTA)** | **69.206** | **+6.41%** | **243.12s** | **-86.2%** |
+| | **L2Seg-SYN-PYVRP (Our FSTA)** | **66.899** | **+2.85%** | **240.63s** | **-77.7%** |
