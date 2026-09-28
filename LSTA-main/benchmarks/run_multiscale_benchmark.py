@@ -72,6 +72,14 @@ def run_nds_scale(nds_dir: str, scale: int, time_limit: int) -> Dict[str, Any]:
     return {"cost": None, "time": None, "status": "Error/Timeout"}
 
 
+def format_time_display(sec: Optional[float]) -> str:
+    if sec is None:
+        return "—"
+    if sec >= 60.0:
+        return f"{sec / 60.0:.1f}m ({sec:.0f}s)"
+    return f"{sec:.2f}s"
+
+
 def save_markdown_and_json(
     all_scale_results: List[Dict[str, Any]],
     out_md: str,
@@ -84,41 +92,47 @@ def save_markdown_and_json(
 
     l2_name = "L2Seg-SYN-LNS (Ours)"
     with open(out_md, "w", encoding="utf-8") as f:
-        f.write("# Bảng Đối Chuẩn SOTA Đa Quy Mô: CVRP 1k & 2k (ICLR 2026 Table 2 Setting)\n\n")
-        f.write(f"- **Ngân sách thời gian (Paper Original Budgets)**: 1k = {budgets.get(1000, 150.0):.1f}s (2.5m), 2k = {budgets.get(2000, 240.0):.1f}s (4.0m)\n")
-        f.write(f"- **Mô hình đề xuất**: `{l2_name}` (FSTA Phân đoạn Nén đồ thị + Backbone LNS thuần túy, không dùng GA bên trong)\n")
-        f.write(f"- **Tập dữ liệu**: `vrp1000_test_seed1234.pkl`, `vrp2000_test_seed1234.pkl` (Tập test chuẩn NCO)\n\n")
-        f.write("| Quy mô đề bài | Thuật toán / Mô hình | Chi phí đạt được (Cost ↓) | Chênh lệch Gap vs HGS | Thời gian chạy (Time) | Độ nén không gian (Search Space Reduction) |\n")
-        f.write("| :---: | :--- | :---: | :---: | :---: | :---: |\n")
+        f.write("# Bảng Đối Chuẩn SOTA Đa Quy Mô: CVRP 1k, 2k, 5k (ICLR 2026 Table 2 Setting)\n\n")
+        f.write(f"- **Mô hình đề xuất**: `{l2_name}` (FSTA Phân đoạn Nén đồ thị + Backbone LNS thuần túy, không dùng GA bên trong)\n\n")
+        f.write("| Quy mô (Scale) | Thuật toán / Mô hình (Method) | Chi phí đạt được (Cost ↓) | Chênh lệch Gap vs HGS | Thời gian chạy (Time) | Độ nén không gian (Search Space Reduction) |\n")
+        f.write("| :--- | :--- | :---: | :---: | :---: | :---: |\n")
         for item in all_scale_results:
             s = f"**CVRP-{item['scale']}**"
-            f.write(f"| {s} | **HGS (Vidal 2022)** | **{item['pyvrp_cost']:.3f}** | 0.00% (Baseline) | {item['pyvrp_time']:.2f}s | 0.0% (Đồ thị đầy đủ) |\n")
+            py_t = format_time_display(item.get('pyvrp_time'))
+            f.write(f"| {s} | **HGS (Vidal 2022)** | **{item['pyvrp_cost']:.3f}** | 0.00% (Baseline) | {py_t} | 0.0% (Đồ thị đầy đủ) |\n")
             if "lns_cost" in item and item["lns_cost"] is not None:
                 lns_gap = f"{(item['lns_cost'] - item['pyvrp_cost']) / item['pyvrp_cost'] * 100.0:+.2f}%"
-                f.write(f"| | **LNS (Shaw 1998)** | {item['lns_cost']:.3f} | {lns_gap} | {item['lns_time']:.2f}s | 0.0% (Đồ thị đầy đủ) |\n")
+                lns_t = format_time_display(item.get('lns_time'))
+                f.write(f"| | **LNS (Shaw 1998)** | {item['lns_cost']:.3f} | {lns_gap} | {lns_t} | 0.0% (Đồ thị đầy đủ) |\n")
             if item.get('nds_cost') is not None:
                 nds_c_str = f"{item['nds_cost']:.3f}"
-                nds_t_str = f"{item['nds_time']:.2f}s"
+                nds_t_str = format_time_display(item.get('nds_time'))
                 nds_gap_str = item['nds_gap']
                 nds_red = "0.0% (Đồ thị đầy đủ)"
             else:
-                nds_c_str = "—"
+                nds_c_str = "Bị sập OOM (-)"
                 nds_t_str = "—"
                 nds_gap_str = "—"
                 nds_red = "OOM / Tràn VRAM ($O(N^2)$)"
             f.write(f"| | **NDS (Hottung et al. 2022)** | {nds_c_str} | {nds_gap_str} | {nds_t_str} | {nds_red} |\n")
-            f.write(f"| | **{l2_name}** | **{item['l2seg_cost']:.3f}** | **{item['l2seg_gap']}** | **{item['l2seg_time']:.2f}s** | **-{item['l2seg_comp']:.1f}% (Nén đồ thị!)** |\n")
+            l2_t = format_time_display(item.get('l2seg_time'))
+            f.write(f"| | **{l2_name}** | **{item['l2seg_cost']:.3f}** | **{item['l2seg_gap']}** | **{l2_t}** | **-{item['l2seg_comp']:.1f}% (Nén đồ thị!)** |\n")
 
 
 def main():
     if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(line_buffering=True)
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+        except Exception:
+            pass
 
     parser = argparse.ArgumentParser(description="Multi-Scale Benchmark: 1k, 2k (L2Seg-SYN-LNS vs Baselines)")
     parser.add_argument("--scales", type=str, default="1000,2000", help="Comma-separated scales (default: 1000,2000)")
     parser.add_argument("--time_limit", type=float, default=None, help="Uniform time limit across all scales for baselines")
     parser.add_argument("--time_1k", type=float, default=150.0, help="Time limit for CVRP 1k baseline (default: 150s / 2.5m)")
     parser.add_argument("--time_2k", type=float, default=240.0, help="Time limit for CVRP 2k baseline (default: 240s / 4.0m)")
+    parser.add_argument("--time_5k", type=float, default=300.0, help="Time limit for CVRP 5k baseline (default: 300s / 5.0m)")
     parser.add_argument("--reopt_time", type=float, default=2.5, help="Re-optimization time per iteration")
     parser.add_argument("--backbone", type=str, default="lns", choices=["lns"], help="Backbone re-optimizer (default: lns)")
     parser.add_argument("--nds_dir", type=str, default="../NDS", help="Path to NDS cloned repository")
@@ -129,6 +143,7 @@ def main():
     budgets = {
         1000: args.time_limit if args.time_limit is not None else args.time_1k,
         2000: args.time_limit if args.time_limit is not None else args.time_2k,
+        5000: args.time_limit if args.time_limit is not None else args.time_5k,
     }
 
     nds_dir = os.path.abspath(os.path.join(project_root, args.nds_dir))
@@ -255,30 +270,69 @@ def main():
         save_markdown_and_json(all_scale_results, out_md, out_json, budgets, backbone="lns")
         print(f"  [+] Progress saved after scale N={scale} -> {out_md}")
 
-    # Summary Table
-    print("\n" + "=" * 115)
-    print("      MULTI-SCALE SUMMARY COMPARISON TABLE: CVRP 1k, 2k (ICLR 2026 PURE L2Seg-SYN-LNS)")
-    print("=" * 115)
-    print(f"{'Scale':<8} | {'Method':<26} | {'Obj (Cost)':<12} | {'Gap vs HGS':<12} | {'Time (s)':<12} | {'Search Space Reduction':<20}")
-    print("-" * 115)
+    # Exact 6-Column Summary Table Matching Table 2 Standard
+    headers = [
+        "Quy mô (Scale)",
+        "Thuật toán / Mô hình (Method)",
+        "Chi phí đạt được (Cost ↓)",
+        "Chênh lệch Gap vs HGS",
+        "Thời gian chạy (Time)",
+        "Độ nén không gian (Search Space Reduction)"
+    ]
+    col_widths = [14, 28, 26, 24, 22, 34]
+    double_sep = "=" * (sum(col_widths) + 3 * len(col_widths) + 1)
+    mid_sep = "-" * (sum(col_widths) + 3 * len(col_widths) + 1)
 
-    for item in all_scale_results:
-        s = f"N={item['scale']}"
-        py_t_str = f"{item['pyvrp_time']:.2f}s"
-        print(f"{s:<8} | {'HGS (Vidal 2022)':<26} | {item['pyvrp_cost']:<12.3f} | {'0.00%':<12} | {py_t_str:<12} | {'0.0% (Full Graph)':<20}")
+    print("\n" + double_sep)
+    print("      BẢNG TỔNG HỢP KẾT QUẢ THỰC NGHIỆM ĐA QUY MÔ (CVRP BENCHMARK)")
+    print(double_sep)
+    header_str = "| " + " | ".join([f"{headers[i]:<{col_widths[i]}}" for i in range(len(headers))]) + " |"
+    print(header_str)
+    print(double_sep)
+
+    for idx, item in enumerate(all_scale_results):
+        scale_label = f"CVRP-{item['scale']}"
+        py_cost = f"{item['pyvrp_cost']:.3f}"
+        py_gap = "0.00% (Baseline)"
+        py_time = format_time_display(item.get('pyvrp_time'))
+        py_red = "0.0% (Đồ thị đầy đủ)"
+
+        if idx > 0:
+            print(mid_sep)
+
+        # 1. HGS
+        print(f"| {scale_label:<{col_widths[0]}} | {'HGS (Vidal 2022)':<{col_widths[1]}} | {py_cost:<{col_widths[2]}} | {py_gap:<{col_widths[3]}} | {py_time:<{col_widths[4]}} | {py_red:<{col_widths[5]}} |")
+
+        # 2. LNS
         if "lns_cost" in item and item["lns_cost"] is not None:
-            lns_g = f"{(item['lns_cost'] - item['pyvrp_cost']) / item['pyvrp_cost'] * 100.0:+.2f}%"
-            lns_t = f"{item['lns_time']:.2f}s"
-            print(f"{'':<8} | {'LNS (Shaw 1998)':<26} | {item['lns_cost']:<12.3f} | {lns_g:<12} | {lns_t:<12} | {'0.0% (Full Graph)':<20}")
-        nds_c_str = f"{item['nds_cost']:.3f}" if item['nds_cost'] is not None else "N/A"
-        nds_t_str = f"{item['nds_time']:.2f}s" if item['nds_time'] is not None else "-"
-        nds_reduct = "0.0% (Full Graph)" if item['nds_cost'] is not None else "OOM / No Model (-)"
-        comp_str = f"-{item['l2seg_comp']:.1f}% (Compressed!)"
-        l2_t_str = f"{item['l2seg_time']:.2f}s"
-        print(f"{'':<8} | {'L2Seg-SYN-LNS (Ours)':<26} | {item['l2seg_cost']:<12.3f} | {item['l2seg_gap']:<12} | {l2_t_str:<12} | {comp_str:<20}")
-        print("-" * 115)
+            lns_cost = f"{item['lns_cost']:.3f}"
+            lns_gap = f"{(item['lns_cost'] - item['pyvrp_cost']) / item['pyvrp_cost'] * 100.0:+.2f}%"
+            lns_time = format_time_display(item.get('lns_time'))
+            lns_red = "0.0% (Đồ thị đầy đủ)"
+            print(f"| {'':<{col_widths[0]}} | {'LNS (Shaw 1998)':<{col_widths[1]}} | {lns_cost:<{col_widths[2]}} | {lns_gap:<{col_widths[3]}} | {lns_time:<{col_widths[4]}} | {lns_red:<{col_widths[5]}} |")
 
-    print(f"\n[+] Multi-Scale Benchmark complete and saved to: {out_md}")
+        # 3. NDS
+        if item.get("nds_cost") is not None:
+            nds_cost = f"{item['nds_cost']:.3f}"
+            nds_gap = item['nds_gap']
+            nds_time = format_time_display(item.get('nds_time'))
+            nds_red = "0.0% (Đồ thị đầy đủ)"
+        else:
+            nds_cost = "Bị sập OOM (-)"
+            nds_gap = "—"
+            nds_time = "—"
+            nds_red = "OOM / Tràn VRAM (O(N^2))"
+        print(f"| {'':<{col_widths[0]}} | {'NDS (Hottung et al. 2022)':<{col_widths[1]}} | {nds_cost:<{col_widths[2]}} | {nds_gap:<{col_widths[3]}} | {nds_time:<{col_widths[4]}} | {nds_red:<{col_widths[5]}} |")
+
+        # 4. L2Seg-SYN-LNS (Ours)
+        l2_cost = f"{item['l2seg_cost']:.3f}"
+        l2_gap = item['l2seg_gap']
+        l2_time = format_time_display(item.get('l2seg_time'))
+        l2_red = f"-{item['l2seg_comp']:.1f}% (Nén đồ thị!)"
+        print(f"| {'':<{col_widths[0]}} | {'L2Seg-SYN-LNS (Ours)':<{col_widths[1]}} | {l2_cost:<{col_widths[2]}} | {l2_gap:<{col_widths[3]}} | {l2_time:<{col_widths[4]}} | {l2_red:<{col_widths[5]}} |")
+
+    print(double_sep)
+    print(f"\n[+] Kết quả benchmark đã được lưu thành công vào file: {out_md}\n")
 
 
 if __name__ == "__main__":
