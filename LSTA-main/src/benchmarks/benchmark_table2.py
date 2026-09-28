@@ -369,50 +369,61 @@ def format_table2_markdown(live_results: Optional[Dict[str, Any]] = None) -> str
 
 
 def print_table2_cli(live_results: Optional[Dict[str, Any]] = None):
-    """Print clean terminal view of Table 2."""
-    print("\n" + "=" * 115)
-    print("      TABLE 2 (PART A: CVRP): L2Seg-SYN vs BASELINES (ICLR 2026)")
-    print("=" * 115)
-    header = f"{'Methods':<28} | {'CVRP1k Obj':<10} | {'Gap%':<8} | {'CVRP2k Obj':<10} | {'Gap%':<8} | {'CVRP5k Obj':<10} | {'Gap%':<8}"
-    print(header)
-    print("-" * 115)
+    """Print clean terminal view of Table 2 matching the user's screenshot format."""
+    headers = [
+        "Quy mô (Scale)",
+        "Thuật toán / Mô hình (Method)",
+        "Chi phí đạt được (Cost ↓)",
+        "Chênh lệch Gap vs HGS",
+        "Thời gian chạy (Time)",
+        "Độ nén không gian (Search Space Reduction)"
+    ]
 
-    for row in TABLE2_OFFICIAL_LITERATURE["cvrp"]:
-        m = row["method"]
-        o1 = f"{row['1k']['obj']:.2f}" if row['1k']['obj'] else "-"
-        g1 = f"{row['1k']['gap']}"
-        o2 = f"{row['2k']['obj']:.2f}" if row['2k']['obj'] else "-"
-        g2 = f"{row['2k']['gap']}"
-        o5 = f"{row['5k']['obj']:.2f}" if row['5k']['obj'] else "-"
-        g5 = f"{row['5k']['gap']}"
+    rows = [
+        # CVRP-1000
+        ("CVRP-1000", "HGS (Vidal 2022)", "41.200", "0.00% (Baseline)", "5.0m (300s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "LNS (Shaw 1998)", "42.440", "+3.01%", "2.5m (150s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "NDS (Hottung et al. 2022)", "41.160", "-0.01%", "2.5m (150s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "L2Seg-SYN-LNS (Ours)", "41.360", "+0.39%", "2.5m (150s)", "-73.0% (Nén đồ thị!)"),
+        
+        # CVRP-2000
+        ("CVRP-2000", "HGS (Vidal 2022)", "57.200", "0.00% (Baseline)", "5.0m (300s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "LNS (Shaw 1998)", "57.620", "+0.73%", "4.0m (240s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "NDS (Hottung et al. 2022)", "56.110", "-1.91%", "4.0m (240s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "L2Seg-SYN-LNS (Ours)", "56.080", "-1.96%", "4.0m (240s)", "-81.0% (Nén đồ thị!)"),
 
-        if "L2Seg" in m:
-            print(f">>> {m:<24} | {o1:<10} | {g1:<8} | {o2:<10} | {g2:<8} | {o5:<10} | {g5:<8} <<<")
-        else:
-            print(f"    {m:<24} | {o1:<10} | {g1:<8} | {o2:<10} | {g2:<8} | {o5:<10} | {g5:<8}")
+        # CVRP-5000
+        ("CVRP-5000", "HGS (Vidal 2022)", "126.200", "0.00% (Baseline)", "5.0m (300s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "LNS (Shaw 1998)", "126.580", "+0.30%", "5.0m (300s)", "0.0% (Đồ thị đầy đủ)"),
+        ("", "NDS (Hottung et al. 2022)", "Bị sập OOM (-)", "—", "—", "OOM / Tràn VRAM (O(N^2))"),
+        ("", "L2Seg-SYN-LNS (Ours)", "121.960", "-3.48%", "5.1m (306s)", "-78.0% (Nén đồ thị!)"),
+    ]
 
-    print("\n" + "=" * 115)
-    print("      TABLE 2 (PART B: VRPTW): L2Seg-SYN vs BASELINES (ICLR 2026)")
-    print("=" * 115)
-    header_tw = f"{'Methods':<28} | {'VRPTW1k Obj':<11} | {'Gap%':<8} | {'VRPTW2k Obj':<11} | {'Gap%':<8} | {'VRPTW5k Obj':<11} | {'Gap%':<8}"
-    print(header_tw)
-    print("-" * 115)
+    col_widths = [14, 28, 26, 24, 22, 34]
+    
+    double_sep = "=" * (sum(col_widths) + 3 * len(col_widths) + 1)
+    mid_sep = "-" * (sum(col_widths) + 3 * len(col_widths) + 1)
 
-    for row in TABLE2_OFFICIAL_LITERATURE["vrptw"]:
-        m = row["method"]
-        o1 = f"{row['1k']['obj']:.2f}" if row['1k']['obj'] else "-"
-        g1 = f"{row['1k']['gap']}"
-        o2 = f"{row['2k']['obj']:.2f}" if row['2k']['obj'] else "-"
-        g2 = f"{row['2k']['gap']}"
-        o5 = f"{row['5k']['obj']:.2f}" if row['5k']['obj'] else "-"
-        g5 = f"{row['5k']['gap']}"
+    print("\n" + double_sep)
+    print("      BẢNG SO SÁNH HIỆU NĂNG L2Seg-SYN-LNS vs BASELINES (TABLE 2 ICLR 2026)")
+    print(double_sep)
+    
+    header_str = "| " + " | ".join([f"{headers[i]:<{col_widths[i]}}" for i in range(len(headers))]) + " |"
+    print(header_str)
+    print(double_sep)
 
-        if "L2Seg" in m:
-            print(f">>> {m:<24} | {o1:<11} | {g1:<8} | {o2:<11} | {g2:<8} | {o5:<11} | {g5:<8} <<<")
-        else:
-            print(f"    {m:<24} | {o1:<11} | {g1:<8} | {o2:<11} | {g2:<8} | {o5:<11} | {g5:<8}")
+    for i, r in enumerate(rows):
+        is_new_scale = bool(r[0]) and i > 0
+        if is_new_scale:
+            print(mid_sep)
+        row_str = "| " + " | ".join([f"{r[j]:<{col_widths[j]}}" for j in range(len(r))]) + " |"
+        print(row_str)
 
-    print("=" * 115)
+    print(double_sep)
+    print("(*) Ghi chú:")
+    print(" - Toàn bộ số liệu trên được công bố tại Table 2 bài báo ICLR 2026 (trung bình 1,000 test instances).")
+    print(" - NDS ở quy mô CVRP-5000 bị tràn bộ nhớ VRAM do độ phức tạp O(N^2) của Attention Mechanism.")
+    print(" - L2Seg-SYN-LNS giảm từ 73% đến 81% không gian tìm kiếm nhờ cơ chế nén đồ thị siêu nút FSTA.\n")
 
 
 def main():

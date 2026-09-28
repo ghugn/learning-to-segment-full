@@ -108,8 +108,8 @@ def main():
 
     elif args.mode == "multiscale":
         from benchmarks.run_multiscale_benchmark import main as multiscale_main
-        print("\n[*] Launching Multi-Scale Benchmark Suite (1k, 2k, 3k across PyVRP, NDS, L2Seg)...")
-        sys.argv = [sys.argv[0], f"--backbone={args.backbone}", f"--time_1k={args.time_1k}", f"--time_2k={args.time_2k}", f"--time_3k={args.time_3k}"] + unknown
+        print("\n[*] Launching Multi-Scale Benchmark Suite (1k, 2k across HGS, LNS, NDS, L2Seg)...")
+        sys.argv = [sys.argv[0], f"--backbone={args.backbone}", f"--time_1k={args.time_1k}", f"--time_2k={args.time_2k}"] + unknown
         multiscale_main()
 
     elif args.mode == "visualize":
