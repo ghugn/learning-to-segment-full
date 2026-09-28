@@ -41,13 +41,13 @@ def main():
     parser.add_argument("--capacity", type=float, default=50.0, help="Vehicle capacity")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--output", type=str, default="assets/l2seg_fsta_process.png", help="Path for visualization output")
-    parser.add_argument("--backbone", type=str, default="pyvrp", choices=["pyvrp", "lns"], help="Backbone solver for L2Seg")
+    parser.add_argument("--backbone", type=str, default="lns", choices=["lns"], help="Backbone solver for L2Seg (ICLR 2026: LNS)")
     parser.add_argument("--dataset", type=str, default=None, help="Path to .pkl dataset file (e.g. ../NDS/data/cvrp/vrp1000_test_seed1234.pkl)")
     parser.add_argument("--instance_idx", type=int, default=0, help="Instance index in dataset")
     parser.add_argument("--time_limit", type=float, default=15.0, help="Time limit in seconds for solving")
     parser.add_argument("--time_1k", type=int, default=150, help="Time limit for CVRP-1000")
     parser.add_argument("--time_2k", type=int, default=240, help="Time limit for CVRP-2000")
-    parser.add_argument("--time_3k", type=int, default=240, help="Time limit for CVRP-3000")
+    parser.add_argument("--time_5k", type=int, default=300, help="Time limit for CVRP-5000")
 
     args, unknown = parser.parse_known_args()
 

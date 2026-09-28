@@ -77,69 +77,58 @@ def save_markdown_and_json(
     out_md: str,
     out_json: str,
     budgets: Dict[int, float],
-    l2seg_budgets: Dict[int, float],
-    backbone: str = "pyvrp",
+    backbone: str = "lns",
 ):
     with open(out_json, "w", encoding="utf-8") as f:
-        json.dump({"results": all_scale_results, "pyvrp_budgets": budgets, "l2seg_budgets": l2seg_budgets}, f, indent=2)
+        json.dump({"results": all_scale_results, "budgets": budgets}, f, indent=2)
 
-    l2_name = f"L2Seg-SYN-{backbone.upper()} (Ours)"
+    l2_name = "L2Seg-SYN-LNS (Ours)"
     with open(out_md, "w", encoding="utf-8") as f:
-        f.write("# Bảng Kết Quả Đánh Giá Đa Quy Mô: CVRP 1k, 2k, 3k (Accelerated Time-to-Quality Benchmark)\n\n")
-        f.write(f"- **Ngân sách PyVRP/NDS Baseline**: 1k = {budgets[1000]:.1f}s (2.5m), 2k = {budgets[2000]:.1f}s (4.0m), 3k = {budgets[3000]:.1f}s (4.0m)\n")
-        f.write(f"- **Ngân sách L2Seg Tăng Tốc (Ours)**: 1k = {l2seg_budgets[1000]:.1f}s (5x Speedup), 2k = {l2seg_budgets[2000]:.1f}s (4x Speedup), 3k = {l2seg_budgets[3000]:.1f}s (4x Speedup)\n")
-        f.write(f"- **Tập dữ liệu**: `vrp1000_test_seed1234.pkl`, `vrp2000_test_seed1234.pkl`, Synthetic CVRP3k\n\n")
+        f.write("# Bảng Đối Chuẩn SOTA Đa Quy Mô: CVRP 1k & 2k (ICLR 2026 Table 2 Setting)\n\n")
+        f.write(f"- **Ngân sách thời gian (Paper Original Budgets)**: 1k = {budgets.get(1000, 150.0):.1f}s (2.5m), 2k = {budgets.get(2000, 240.0):.1f}s (4.0m)\n")
+        f.write(f"- **Mô hình đề xuất**: `{l2_name}` (FSTA Phân đoạn Nén đồ thị + Backbone LNS thuần túy, không dùng GA bên trong)\n")
+        f.write(f"- **Tập dữ liệu**: `vrp1000_test_seed1234.pkl`, `vrp2000_test_seed1234.pkl` (Tập test chuẩn NCO)\n\n")
         f.write("| Quy mô đề bài | Thuật toán / Mô hình | Chi phí đạt được (Cost ↓) | Chênh lệch Gap vs HGS | Thời gian chạy (Time) | Độ nén không gian (Search Space Reduction) |\n")
         f.write("| :---: | :--- | :---: | :---: | :---: | :---: |\n")
         for item in all_scale_results:
             s = f"**CVRP-{item['scale']}**"
-            f.write(f"| {s} | **PyVRP (HGS Vidal 2022)** | **{item['pyvrp_cost']:.3f}** | 0.00% (Baseline) | {item['pyvrp_time']:.2f}s | 0.0% (Đồ thị đầy đủ) |\n")
-            if item['nds_cost'] is not None:
+            f.write(f"| {s} | **HGS (Vidal 2022)** | **{item['pyvrp_cost']:.3f}** | 0.00% (Baseline) | {item['pyvrp_time']:.2f}s | 0.0% (Đồ thị đầy đủ) |\n")
+            if "lns_cost" in item and item["lns_cost"] is not None:
+                lns_gap = f"{(item['lns_cost'] - item['pyvrp_cost']) / item['pyvrp_cost'] * 100.0:+.2f}%"
+                f.write(f"| | **LNS (Shaw 1998)** | {item['lns_cost']:.3f} | {lns_gap} | {item['lns_time']:.2f}s | 0.0% (Đồ thị đầy đủ) |\n")
+            if item.get('nds_cost') is not None:
                 nds_c_str = f"{item['nds_cost']:.3f}"
                 nds_t_str = f"{item['nds_time']:.2f}s"
                 nds_gap_str = item['nds_gap']
                 nds_red = "0.0% (Đồ thị đầy đủ)"
             else:
-                nds_c_str = "Bị sập OOM (-)"
+                nds_c_str = "—"
                 nds_t_str = "—"
                 nds_gap_str = "—"
                 nds_red = "OOM / Tràn VRAM ($O(N^2)$)"
             f.write(f"| | **NDS (Hottung et al. 2022)** | {nds_c_str} | {nds_gap_str} | {nds_t_str} | {nds_red} |\n")
-            speedup = item['pyvrp_time'] / item['l2seg_time'] if item['l2seg_time'] > 0 else 1.0
-            speedup_str = f" (Nhanh gấp {speedup:.1f}x!)" if speedup >= 1.5 else ""
-            f.write(f"| | **{l2_name}** | **{item['l2seg_cost']:.3f}** | **{item['l2seg_gap']}** | **{item['l2seg_time']:.2f}s{speedup_str}** | **-{item['l2seg_comp']:.1f}% (Nén đồ thị!)** |\n")
+            f.write(f"| | **{l2_name}** | **{item['l2seg_cost']:.3f}** | **{item['l2seg_gap']}** | **{item['l2seg_time']:.2f}s** | **-{item['l2seg_comp']:.1f}% (Nén đồ thị!)** |\n")
 
 
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(line_buffering=True)
 
-    parser = argparse.ArgumentParser(description="Multi-Scale Benchmark: 1k, 2k, 3k (L2Seg vs PyVRP vs NDS)")
+    parser = argparse.ArgumentParser(description="Multi-Scale Benchmark: 1k, 2k (L2Seg-SYN-LNS vs Baselines)")
+    parser.add_argument("--scales", type=str, default="1000,2000", help="Comma-separated scales (default: 1000,2000)")
     parser.add_argument("--time_limit", type=float, default=None, help="Uniform time limit across all scales for baselines")
     parser.add_argument("--time_1k", type=float, default=150.0, help="Time limit for CVRP 1k baseline (default: 150s / 2.5m)")
     parser.add_argument("--time_2k", type=float, default=240.0, help="Time limit for CVRP 2k baseline (default: 240s / 4.0m)")
-    parser.add_argument("--time_3k", type=float, default=240.0, help="Time limit for CVRP 3k baseline (default: 240s / 4.0m)")
-    parser.add_argument("--l2seg_time_1k", type=float, default=30.0, help="L2Seg time limit for CVRP 1k (default: 30s)")
-    parser.add_argument("--l2seg_time_2k", type=float, default=60.0, help="L2Seg time limit for CVRP 2k (default: 60s)")
-    parser.add_argument("--l2seg_time_3k", type=float, default=60.0, help="L2Seg time limit for CVRP 3k (default: 60s)")
-    parser.add_argument("--l2seg_time_limit", type=float, default=None, help="Uniform L2Seg time limit across all scales")
     parser.add_argument("--reopt_time", type=float, default=2.5, help="Re-optimization time per iteration")
-    parser.add_argument("--backbone", type=str, default="pyvrp", choices=["pyvrp", "lns"], help="Backbone re-optimizer (default: pyvrp)")
+    parser.add_argument("--backbone", type=str, default="lns", choices=["lns"], help="Backbone re-optimizer (default: lns)")
     parser.add_argument("--nds_dir", type=str, default="../NDS", help="Path to NDS cloned repository")
-    parser.add_argument("--reuse_baselines", action="store_true", default=True, help="Reuse cached PyVRP and NDS baselines")
+    parser.add_argument("--reuse_baselines", action="store_true", default=True, help="Reuse cached baselines")
     parser.add_argument("--fresh_baselines", dest="reuse_baselines", action="store_false", help="Rerun baselines from scratch")
     args = parser.parse_args()
 
     budgets = {
         1000: args.time_limit if args.time_limit is not None else args.time_1k,
         2000: args.time_limit if args.time_limit is not None else args.time_2k,
-        3000: args.time_limit if args.time_limit is not None else args.time_3k,
-    }
-
-    l2seg_budgets = {
-        1000: args.l2seg_time_limit if args.l2seg_time_limit is not None else args.l2seg_time_1k,
-        2000: args.l2seg_time_limit if args.l2seg_time_limit is not None else args.l2seg_time_2k,
-        3000: args.l2seg_time_limit if args.l2seg_time_limit is not None else args.l2seg_time_3k,
     }
 
     nds_dir = os.path.abspath(os.path.join(project_root, args.nds_dir))
@@ -150,9 +139,9 @@ def main():
     chk_ar = os.path.join(project_root, "checkpoints", "ar_model.pt")
     model = L2SegModel.load_pretrained(chk_nar, chk_ar)
 
-    l2seg_solver = L2SegIterativeSolver(model=model, backbone=args.backbone)
+    l2seg_solver = L2SegIterativeSolver(model=model, backbone="lns")
 
-    scales = [1000, 2000, 3000]
+    scales = [int(s.strip()) for s in args.scales.split(",") if s.strip()]
     all_scale_results = []
     out_md = os.path.join(project_root, "benchmarks", "multiscale_benchmark_results.md")
     out_json = os.path.join(project_root, "benchmarks", "multiscale_benchmark_results.json")
@@ -168,16 +157,16 @@ def main():
             pass
 
     print("=" * 105)
-    print("      MULTI-SCALE SOTA BENCHMARK ON CVRP: 1k, 2k, 3k (PAPER ORIGINAL TIME)")
-    print(f"      Budgets: 1k={budgets[1000]:.1f}s (2.5m) | 2k={budgets[2000]:.1f}s (4.0m) | 3k={budgets[3000]:.1f}s (4.0m)")
-    print("      Architecture: AMD Ryzen 7 8745HS (8 Cores / 16 Threads, Zen 4)")
+    print("      MULTI-SCALE SOTA BENCHMARK ON CVRP: 1k, 2k (ICLR 2026 PURE L2Seg-SYN-LNS)")
+    print(f"      Budgets: 1k={budgets.get(1000, 150):.1f}s (2.5m) | 2k={budgets.get(2000, 240):.1f}s (4.0m)")
+    print("      Architecture: Pure FSTA + LNS Backbone (No GA/PyVRP Inside)")
     print("=" * 105)
 
     for scale in scales:
-        time_budget = budgets[scale]
+        time_budget = budgets.get(scale, 150.0)
         print(f"\n{'='*40} SCALE N = {scale} CUSTOMERS (Budget: {time_budget:.1f}s) {'='*40}")
 
-        # Load or generate instance
+        # Load instance
         if scale == 1000:
             pkl_path = os.path.join(nds_dir, "data", "cvrp", "vrp1000_test_seed1234.pkl")
             instance = load_dataset_instance(pkl_path, 0)
@@ -185,29 +174,45 @@ def main():
             pkl_path = os.path.join(nds_dir, "data", "cvrp", "vrp2000_test_seed1234.pkl")
             instance = load_dataset_instance(pkl_path, 0)
         else:
-            instance = generate_synthetic_instance(3000, capacity=300.0, seed=42)
+            instance = generate_synthetic_instance(scale, capacity=300.0, seed=42)
 
         cached_entry = cached_entries.get(scale)
 
-        # 1. PyVRP (HGS Vidal 2022)
+        # 1. HGS (Vidal 2022) via PyVRP C++ Baseline
         if cached_entry and "pyvrp_cost" in cached_entry and cached_entry["pyvrp_cost"] is not None:
             py_cost = cached_entry["pyvrp_cost"]
             py_time = cached_entry["pyvrp_time"]
-            print(f"  [1/3] PyVRP (HGS Vidal 2022) [Cached]: Cost: {py_cost:.3f} ({py_time:.2f}s)")
+            print(f"  [1/4] HGS (Vidal 2022) [Cached]: Cost: {py_cost:.3f} ({py_time:.2f}s)")
         else:
-            print(f"  [1/3] Running PyVRP (HGS Vidal 2022, budget: {time_budget:.1f}s)...", end="", flush=True)
+            print(f"  [1/4] Running HGS (Vidal 2022, budget: {time_budget:.1f}s)...", end="", flush=True)
             py_routes, py_cost, py_time = pyvrp_solver.solve(instance, time_limit=time_budget)
             print(f" Done ({py_time:.2f}s, Cost: {py_cost:.3f})")
 
-        # 2. NDS (Hottung et al. 2022)
+        # 2. Vanilla LNS (Shaw 1998) Baseline
+        if cached_entry and "lns_cost" in cached_entry and cached_entry["lns_cost"] is not None:
+            lns_cost = cached_entry["lns_cost"]
+            lns_time = cached_entry["lns_time"]
+            print(f"  [2/4] Vanilla LNS (Shaw 1998) [Cached]: Cost: {lns_cost:.3f} ({lns_time:.2f}s)")
+        else:
+            print(f"  [2/4] Running Vanilla LNS (Shaw 1998, budget: {time_budget:.1f}s)...", end="", flush=True)
+            t0 = time.perf_counter()
+            from solvers.lns import LNSSolver
+            from fsta.init_solution import build_greedy_sweep_solution
+            vanilla_lns = LNSSolver(seed=42)
+            init_r = build_greedy_sweep_solution(instance)
+            lns_routes, lns_cost, _ = vanilla_lns.solve(instance, initial_routes=init_r, time_limit=time_budget)
+            lns_time = time.perf_counter() - t0
+            print(f" Done ({lns_time:.2f}s, Cost: {lns_cost:.3f})")
+
+        # 3. NDS (Hottung et al. 2022) Baseline
         if cached_entry and "nds_status" in cached_entry:
             nds_cost = cached_entry["nds_cost"]
             nds_time = cached_entry["nds_time"]
             nds_status = cached_entry["nds_status"]
             nds_gap_str = cached_entry.get("nds_gap", "-")
-            print(f"  [2/3] NDS (Hottung et al. 2022) [Cached]: Cost: {nds_cost if nds_cost else '-'} ({nds_status})")
+            print(f"  [3/4] NDS (Hottung et al. 2022) [Cached]: Cost: {nds_cost if nds_cost else '-'} ({nds_status})")
         else:
-            print(f"  [2/3] Running NDS (Hottung et al. 2022, budget: {time_budget:.1f}s)...", end="", flush=True)
+            print(f"  [3/4] Running NDS (Hottung et al. 2022, budget: {time_budget:.1f}s)...", end="", flush=True)
             nds_res = run_nds_scale(nds_dir, scale, int(time_budget))
             nds_cost = nds_res.get("cost")
             nds_time = nds_res.get("time")
@@ -219,16 +224,14 @@ def main():
                 nds_gap_str = "-"
                 print(f" {nds_status}")
 
-        l2_name = f"L2Seg-SYN-{args.backbone.upper()} (Ours)"
-        l2_time_budget = l2seg_budgets[scale]
-        # 3. L2Seg Solver (Our Proposed Framework with New Initial Solution & Stagnation Breaker)
-        print(f"  [3/3] Running {l2_name} (FSTA Compression + Sector Init + Stagnation Breaker, budget: {l2_time_budget:.1f}s)...", end="", flush=True)
-        l2_res = l2seg_solver.solve(instance, time_limit=l2_time_budget, reopt_time_per_iter=args.reopt_time)
+        # 4. Pure L2Seg-SYN-LNS (Proposed Framework in Paper)
+        l2_name = "L2Seg-SYN-LNS (Ours)"
+        print(f"  [4/4] Running {l2_name} (Pure FSTA + LNS Backbone, budget: {time_budget:.1f}s)...", end="", flush=True)
+        l2_res = l2seg_solver.solve(instance, time_limit=time_budget, reopt_time_per_iter=args.reopt_time)
         l2_cost = l2_res["best_cost"]
         l2_time = l2_res["total_time"]
         l2_comp = l2_res["avg_compression_pct"]
-        speedup = py_time / l2_time if l2_time > 0 else 1.0
-        print(f" Done ({l2_time:.2f}s, Speedup: {speedup:.1f}x, Cost: {l2_cost:.3f}, Compressed: {l2_comp:.1f}%)")
+        print(f" Done ({l2_time:.2f}s, Cost: {l2_cost:.3f}, Compressed: {l2_comp:.1f}%)")
 
         l2_gap_str = f"{(l2_cost - py_cost) / py_cost * 100.0:+.2f}%"
 
@@ -236,6 +239,8 @@ def main():
             "scale": scale,
             "pyvrp_cost": py_cost,
             "pyvrp_time": py_time,
+            "lns_cost": lns_cost,
+            "lns_time": lns_time,
             "nds_cost": nds_cost,
             "nds_gap": nds_gap_str,
             "nds_time": nds_time,
@@ -244,31 +249,33 @@ def main():
             "l2seg_gap": l2_gap_str,
             "l2seg_time": l2_time,
             "l2seg_comp": l2_comp,
-            "speedup": speedup,
         })
 
         # Save progress incrementally after each scale
-        save_markdown_and_json(all_scale_results, out_md, out_json, budgets, l2seg_budgets, backbone=args.backbone)
+        save_markdown_and_json(all_scale_results, out_md, out_json, budgets, backbone="lns")
         print(f"  [+] Progress saved after scale N={scale} -> {out_md}")
 
     # Summary Table
     print("\n" + "=" * 115)
-    print("      MULTI-SCALE SUMMARY COMPARISON TABLE: CVRP 1k, 2k, 3k (TIME-TO-QUALITY SPEEDUP)")
+    print("      MULTI-SCALE SUMMARY COMPARISON TABLE: CVRP 1k, 2k (ICLR 2026 PURE L2Seg-SYN-LNS)")
     print("=" * 115)
-    print(f"{'Scale':<8} | {'Method':<24} | {'Obj (Cost)':<12} | {'Gap vs HGS':<12} | {'Time (s)':<18} | {'Search Space Reduction':<20}")
+    print(f"{'Scale':<8} | {'Method':<26} | {'Obj (Cost)':<12} | {'Gap vs HGS':<12} | {'Time (s)':<12} | {'Search Space Reduction':<20}")
     print("-" * 115)
 
     for item in all_scale_results:
         s = f"N={item['scale']}"
         py_t_str = f"{item['pyvrp_time']:.2f}s"
-        print(f"{s:<8} | {'PyVRP (HGS Vidal 2022)':<24} | {item['pyvrp_cost']:<12.3f} | {'0.00%':<12} | {py_t_str:<18} | {'0.0% (Full Graph)':<20}")
+        print(f"{s:<8} | {'HGS (Vidal 2022)':<26} | {item['pyvrp_cost']:<12.3f} | {'0.00%':<12} | {py_t_str:<12} | {'0.0% (Full Graph)':<20}")
+        if "lns_cost" in item and item["lns_cost"] is not None:
+            lns_g = f"{(item['lns_cost'] - item['pyvrp_cost']) / item['pyvrp_cost'] * 100.0:+.2f}%"
+            lns_t = f"{item['lns_time']:.2f}s"
+            print(f"{'':<8} | {'LNS (Shaw 1998)':<26} | {item['lns_cost']:<12.3f} | {lns_g:<12} | {lns_t:<12} | {'0.0% (Full Graph)':<20}")
         nds_c_str = f"{item['nds_cost']:.3f}" if item['nds_cost'] is not None else "N/A"
         nds_t_str = f"{item['nds_time']:.2f}s" if item['nds_time'] is not None else "-"
         nds_reduct = "0.0% (Full Graph)" if item['nds_cost'] is not None else "OOM / No Model (-)"
-        print(f"{'':<8} | {'NDS (Hottung et al. 2022)':<24} | {nds_c_str:<12} | {item['nds_gap']:<12} | {nds_t_str:<18} | {nds_reduct:<20}")
         comp_str = f"-{item['l2seg_comp']:.1f}% (Compressed!)"
-        sp_label = f"{item['l2seg_time']:.2f}s ({item['speedup']:.1f}x fast!)"
-        print(f"{'':<8} | {f'{l2_name} (Our FSTA)':<24} | {item['l2seg_cost']:<12.3f} | {item['l2seg_gap']:<12} | {sp_label:<18} | {comp_str:<20}")
+        l2_t_str = f"{item['l2seg_time']:.2f}s"
+        print(f"{'':<8} | {'L2Seg-SYN-LNS (Ours)':<26} | {item['l2seg_cost']:<12.3f} | {item['l2seg_gap']:<12} | {l2_t_str:<12} | {comp_str:<20}")
         print("-" * 115)
 
     print(f"\n[+] Multi-Scale Benchmark complete and saved to: {out_md}")

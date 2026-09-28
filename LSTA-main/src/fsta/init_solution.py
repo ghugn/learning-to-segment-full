@@ -85,10 +85,11 @@ def build_sector_clustered_solution(
     - Assembles the sector solutions into a high-quality global feasible CVRP solution.
     """
     try:
-        from solvers.pyvrp_solver import PyVRPSolver
-        solver = PyVRPSolver(seed=seed)
+        from solvers.lns import LNSSolver
+        solver = LNSSolver(seed=seed)
+        use_lns = True
     except Exception:
-        return build_greedy_sweep_solution(instance)
+        use_lns = False
 
     depot_coord = instance.coords[0]
     num_cust = instance.num_customers
@@ -126,14 +127,18 @@ def build_sector_clustered_solution(
         sec_demands = instance.demands[sec_nodes]
         sec_inst = CVRPInstance(coords=sec_coords, demands=sec_demands, capacity=instance.capacity)
 
-        try:
-            local_routes, _, _ = solver.solve(sec_inst, time_limit=time_limit_per_sector)
-            for r in local_routes:
-                orig_r = [sec_nodes[u] for u in r]
-                all_routes.append(orig_r)
-        except Exception:
-            # Fallback for this sector: greedy sweep
-            sec_greedy_routes = build_greedy_sweep_solution(sec_inst)
+        sec_greedy_routes = build_greedy_sweep_solution(sec_inst)
+        if use_lns:
+            try:
+                local_routes, _, _ = solver.solve(sec_inst, initial_routes=sec_greedy_routes, time_limit=time_limit_per_sector)
+                for r in local_routes:
+                    orig_r = [sec_nodes[u] for u in r]
+                    all_routes.append(orig_r)
+            except Exception:
+                for r in sec_greedy_routes:
+                    orig_r = [sec_nodes[u] for u in r]
+                    all_routes.append(orig_r)
+        else:
             for r in sec_greedy_routes:
                 orig_r = [sec_nodes[u] for u in r]
                 all_routes.append(orig_r)
